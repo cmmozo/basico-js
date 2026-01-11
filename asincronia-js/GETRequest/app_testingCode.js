@@ -4,7 +4,7 @@
 
 // Primeros test para recuperar informacion de la API
 // Recupera 100 posts
-fetch("https://jsonplaceholder.typicode.com/posts")
+  fetch("https://jsonplaceholder.typicode.com/posts")
   .then((response) => response.json())
   .then((data) => console.log(data));
 
@@ -18,7 +18,7 @@ fetch("https://jsonplaceholder.typicode.com/posts")
   .then((response) => response.json())
   .then((data) => console.log(data));
 
-  // Recupera los comentarios del post con id 1
+  // Recupera los 5 comentarios del post con id 1
   fetch("https://jsonplaceholder.typicode.com/posts/1/comments")
   .then((response) => response.json())
   .then((data) => console.log(data));
@@ -39,7 +39,9 @@ fetch("https://jsonplaceholder.typicode.com/posts")
 
 
 
-  // Creando una funcion para GET
+  // Creando una funcion para GET, POST, DELETE requests
+
+  // Funcion sendHttpRequest()
   function sendHttpRequest(method, url, data) {
     return fetch(url, {
       method: method,
@@ -53,13 +55,17 @@ fetch("https://jsonplaceholder.typicode.com/posts")
     });
   }
 
+// Creando código para obtener los posts (POST)
+
+// Funcion fetchPosts()
   async function fetchPosts() {
     const responseData = await sendHttpRequest('GET', 'https://jsonplaceholder.typicode.com/posts');
+    console.log("Datos obtenidos de la API:");
     console.log(responseData);
     
-    // Imprimiendo los datos obtenidos
+    // Imprimiendo los datos obtenidos en el DOM
     const listOfPosts = responseData; // copiando los datos obtenidos a una variable
-
+ 
     for (const post of listOfPosts) {
         const postContainer = document.createElement("article");
         postContainer.id = post.id;
@@ -116,5 +122,20 @@ form.addEventListener('submit', event => {
     console.log(title, content); // Imprimiendo los valores para verificar que se obtienen correctamente
     
     createPost(title, content); // Llamando a la funcion createPost con los valores obtenidos del form
-    
+});
+
+// Creando código para eliminar posts (DELETE)
+
+// Agregando un event listener al elemento padre "postContainer" (variable:listOfPosts) para manejar los clicks en los botones DELETE
+
+postList.addEventListener('click', event => {
+    console.log(event)
+    if (event.target.tagName === 'BUTTON') {
+        const postId = event.target.closest('article').id; // Obtener el ID del post a eliminar (es decir, el article mas cercano al boton clickeado)
+        console.log(postId); // Imprimiendo el ID para verificar que se obtiene correctamente
+        // Llamando a la funcion sendHttpRequest para enviar un DELETE
+        sendHttpRequest('DELETE', `https://jsonplaceholder.typicode.com/posts/${postId}`);  // La estructura se explica en la documentacion de la API en partucular
+                                                                                            // nota: El post no se borra en reaidad porque es una API falsa para pruebas, 
+                                                                                            // pero en un API real si se borraria
+    }
 });
